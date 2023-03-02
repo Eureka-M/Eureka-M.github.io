@@ -2,7 +2,7 @@
 layout:     post
 title:      XMLHttpRequest 运行机制
 subtitle:  
-date:       2023-02-26
+date:       2023-03-01
 author:     
 header-img: 
 catalog: true
