@@ -7,9 +7,8 @@ author:
 header-img: 
 catalog: true
 tags:
-  - css
+  - CSS
 typora-root-url: ..
-
 ---
 
 # background-position 顺序
