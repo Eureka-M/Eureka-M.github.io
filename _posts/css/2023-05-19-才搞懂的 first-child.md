@@ -13,7 +13,7 @@ typora-root-url: ..
 
 ### first-child
 
-直接上图吧，今天做需求时，发现像选中下面框中的第一个formItem，给它加一个由边距。
+直接上图吧，今天做需求时，发现像选中下面框中的第一个formItem，给它加一个右边距。
 
 ![image-20230519160528728](/../img/postImage/image-20230519160528728.png)
 
@@ -55,3 +55,4 @@ typora-root-url: ..
 如果改一下，把第一个元素加上 class="test"，那就可以匹配上了。
 
 <img src="/../img/postImage/image-20230519161859428.png" alt="image-20230519161859428" style="zoom:50%;" />
+
