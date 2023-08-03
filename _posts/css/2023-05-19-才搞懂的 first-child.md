@@ -33,7 +33,7 @@ typora-root-url: ..
 
 ### first-of-type
 
-在 search 的时候有小伙棒提到这个 first-of-type。刚好也一并了解了它的匹配规则。
+在 search 的时候有小伙伴提到这个 first-of-type。刚好也一并了解了它的匹配规则。
 
 > first-of-type 第一步匹配类名对应的标签，找到标签的第一个元素，第二步再需要匹配类名。
 
