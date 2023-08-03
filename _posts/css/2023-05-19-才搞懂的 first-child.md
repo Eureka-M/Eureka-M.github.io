@@ -29,7 +29,7 @@ typora-root-url: ..
 
 > first-child 匹配父元素第一个元素，且第一个元素的类名要符合才会匹配中！！
 
-而上面代码中，父元素的第一个字元素的类名并不是 . good-price-form-item，所以匹配不了。
+而上面代码中，父元素的第一个子元素并不是目标元素，类名也不是 good-price-form-item，所以匹配不了。
 
 ### first-of-type
 
