@@ -13,17 +13,17 @@ typora-root-url: ..
 
 有时候希望打包后的文件名称按照一定的规则显示，比如说：保留原来的`文件名`、`拓展名`、为了防止重复，包含一个`hash`值。这个时候可以使用 [PlaceHolders](https://webpack.js.org/loaders/file-loader/#placeholders)来完成，常见 placeholder 如下：
 
-- [ext]: 处理文件的拓展名
+- ext: 处理文件的拓展名
 
-- [name]: 处理文件的名称
+- name: 处理文件的名称
 
-- [hash]: 文件的内容，使用MD4的散列函数处理，生成一个128位的	"hash 值"
+- hash: 文件的内容，使用MD4的散列函数处理，生成一个128位的	"hash 值"
 
-- [contentHash]: 同上
+- contentHash: 同上
 
-- [hash:<length>]: 截图hash的长度，默认32个字符太长
+- hash:<length>: 截图hash的长度，默认32个字符太长
 
-- [Path]: 文件相对于webpack配置文件的路径
+- Path: 文件相对于webpack配置文件的路径
 
 用法如下：
 
