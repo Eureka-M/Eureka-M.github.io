@@ -70,7 +70,7 @@ typora-root-url: ..
         
         .ivu-table .empty-row {
             height: 48px;
-            pointer-events: none;
+            pointer-events: none; // ！！！屏蔽 dragger 事件
             position: relative;
             background: #fff;
         
