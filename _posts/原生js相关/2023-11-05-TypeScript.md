@@ -301,6 +301,133 @@ const [title, setTitle] = useState("abc")
 
 ## 类型补充
 
+##### 枚举类型
+
+枚举类型是为数不多的 TypeScript 特性有的特性之一
+
+```
+enum Direction {
+  	UP = 'up',
+  	RIGHT = 'right',
+  	DOWN = 'down',
+  	LEFT = 'left'
+}
+
+```
+
+###### 数字枚举
+
+在 TS 中, 枚举内的每一个常量, 当你不设置值的时候, 默认就是 number 类型
+
+```
+enum Direction {
+  	LEFT, // Direction.LEFT = 0
+  	RIGHT, // Direction.LEFT = 1
+  	TOP,
+  	BOTTOM
+}
+
+// 也可以指定值
+enum Pages {
+    ONE = 10,    // 10
+    TWO = 20,    // 20
+    THREE = 30   // 30
+}
+
+// 指定常量后面的未指定常量, 就会按照 +1 的规则一次递增
+enum Pages {
+    ONE = 10,    // 10
+    TWO,         // 11
+    THREE        // 12
+}
+
+enum Pages {
+    ONE,         // 0
+    TWO = 10,    // 10
+    THREE        // 11
+}
+
+enum Pages {
+    ONE,         // 0
+    TWO = 10,    // 10
+    THREE,       // 11
+    FOUR = 30,   // 30
+    FIVE         // 31
+}
+```
+
+**反向映射**：可以通过 key 得到对应的数字, 也可以通过对应的数字得到对应的 key
+
+```
+enum Pages {
+    ONE,    // 0
+    TWO,    // 1
+    THREE   // 2
+}
+
+console.log(Pages.ONE)    // 0
+console.log(Pages.TWO)    // 1
+console.log(Pages.THREE)  // 2
+console.log(Pages[0])     // 'ONE'
+console.log(Pages[1])     // 'TWO'
+console.log(Pages[2])     // 'THREE'
+```
+
+如何做到的呢？在编译的时候, 会同时将 key 和 value 分别颠倒编译一次。
+
+```
+var Pages;
+(function (Pages) {
+    Pages[Enum["ONE"] = 0] = "ONE"
+    Pages[Enum["TWO"] = 1] = "TWO"
+    Pages[Enum["THREE"] = 2] = "THREE"
+})(Pages || (Pages = {}));
+```
+
+
+
+###### 异构枚举
+
+其实就是在一个枚举集合内同时混合了数字枚举和字符串枚举
+
+```
+enum Info {
+  ONE,
+  UP = 'up',
+  TWO = 2,
+  LEFT = 'left'
+}
+```
+
+注意：在枚举集合内,  如果前一个是 字符串枚举, 那么下一个必须要手动赋值, 不然会报错。如果前一个是 数字枚举, 那么下一个可以不必要手动赋值, 会按照上一个 +1 计算。
+
+###### 枚举合并
+
+在 TS 内的枚举, 是支持合并的。多个枚举类型可以分开书写, 会在编译的时候自动合并
+
+```
+enum Direction {
+  UP = 'up',
+  RIGHT = 'right',
+  DOWN = 'down',
+  LEFT = 'left'
+}
+
+enum Direction {
+  TOP = 'top',
+  BOTTOM = 'bottom'
+}
+
+function util(dir: Direction) {}
+
+util(Direction.BOTTOM)
+util(Direction.LEFT)
+```
+
+
+
+
+
 ##### 函数参数
 
 ```
@@ -1329,19 +1456,259 @@ const p: IPerson = {
 
 ```
 interface IPerson {
-  name: string
-  age: number
-  height: number
+      name: string
+      age: number
+      height: number
 }
 
 const info = {
-  name: "why",
-  age: 18,
-  height: 1.88,
-  address: "广州市"
+      name: "why",
+      age: 18,
+      height: 1.88,
+      address: "广州市"
 }
 
 // freshness擦除
 const p: IPerson = info
 ```
+
+
+
+## 泛型
+
+在定义这个函数时, 我不决定这些参数的类型，而是让调用者以参数的形式告知,我这里的函数参数应该是什么类型
+
+```
+function foo<Type>(arg: Type): Type {
+  	return arg
+}
+
+// 调用
+// 1. foo<string>('123')
+// 2. foo('123') // 字面量可以直接被推导出来
+```
+
+传入多个类型
+
+```
+function foo<T, E, O>(arg1: T, arg2: E, arg3?: O, ...args: T[]) {
+
+}
+
+foo<number, string, boolean>(10, "abc", true)
+```
+
+平时在开发中我们可能会看到一些常用的名称：
+
+- T：Type的缩写，类型
+- K、V：key和value的缩写，键值对
+- E：Element的缩写，元素
+- O：Object的缩写，对象
+
+
+
+##### 泛型接口
+
+```
+interface IPerson<T1 = string, T2 = number> {
+  name: T1
+  age: T2
+}
+
+const p: IPerson = {
+  name: "why",
+  age: 18
+}
+```
+
+
+
+##### 泛型类
+
+```
+class Point<T> {
+  x: T
+  y: T
+  z: T
+
+  constructor(x: T, y: T, z: T) {
+    this.x = x
+    this.y = y
+    this.z = y
+  }
+}
+
+const p1 = new Point("1.33.2", "2.22.3", "4.22.1")
+const p2 = new Point<string>("1.33.2", "2.22.3", "4.22.1")
+const p3: Point<string> = new Point("1.33.2", "2.22.3", "4.22.1")
+```
+
+
+
+##### 泛型约束
+
+有时候我们希望传入的类型有某些共性，但是这些共性可能不是在同一种类型中，比如 string 和 array 都是有 length 的，或者某些对象也是会有 length 属性的；
+
+```
+interface ILength {
+  length: number
+}
+
+function getLength<T extends ILength>(arg: T) {
+  return arg.length
+}
+
+getLength("abc")
+getLength(["abc", "cba"])
+getLength({length: 100})
+```
+
+
+
+
+
+## 其他
+
+##### 命名空间
+
+命名空间在 TypeScript 早期时，称之为内部模块，主要目的是将一个模块内部再进行作用域的划分，防止一些命名冲突的问题。
+
+```
+export namespace time {
+  export function format(time: string) {
+    return "2222-02-22"
+  }
+
+  export function foo() {
+
+  }
+
+  export let name: string = "abc"
+}
+
+export namespace price {
+  export function format(price: number) {
+    return "99.99"
+  }
+}
+```
+
+
+
+##### 类型查找
+
+```
+const imageEl = document.getElementById('img') as HTMLImageElement
+```
+
+大家是否有想过 HTMLImageElement类型来自哪里呢？甚至是document为什么可以有getElementById的方法呢？
+
+其实这里就涉及到typescript对类型的管理和查找规则了。
+
+之前编写的 typescript 文件都是 .ts 文件，这些文件最终会输出 .js 文件，也是我们通常编写代码的地方，还有另外一种文件 .d.ts 文件，它是用来做类型的声明(declare)。 它仅仅用来做类型检测，告知 typescript 我们有哪些类型。
+
+typescript会在哪里查找我们的类型声明呢？
+
+- 内置类型声明；
+
+    内置类型声明是typescript自带的、帮助我们内置了JavaScript运行时的一些标准化API的声明文件；包括比如Math、Date等内置类型，也包括DOM API，比如Window、Document等；
+
+    https://github.com/microsoft/TypeScript/tree/main/lib
+
+- 外部定义类型声明；
+
+    外部类型声明通常是我们使用一些库（比如第三方库）时，需要的一些类型声明，这些库通常有两种类型声明方式：
+
+    - 在自己库中进行类型声明（编写.d.ts文件），比如axios
+
+    - 通过社区的一个公有库 DefinitelyTyped 存放类型声明文件
+
+        - https://github.com/DefinitelyTyped/DefinitelyTyped/
+
+        - https://www.typescriptlang.org/dt/search?search=（查找声明安装的地址）
+
+            比如我们安装 react 的类型声明： npm i @types/react --save-dev
+
+- 自己定义类型声明；
+
+    情形1: 我们使用的第三方库是一个纯的 JavaScript 库，没有对应的声明文件；比如 lodash
+
+    情形2: 我们给自己的代码中声明一些类型，方便在其他地方直接进行使用；
+
+    **声明变量/函数/类**
+
+    ```
+    
+    declare let whyName: string
+    declare let whyAge: number
+    declare let whyHeight: number
+    
+    declare function whyFoo(): void
+    
+    declare class Person {
+      name: string
+      age: number
+      constructor(name: string, age: number)
+    }
+    ```
+
+    **声明模块**
+
+    比如 lodash 模块默认不能使用的情况，可以自己来声明这个模块：
+
+    ```
+    
+    declare module 'lodash' {
+      export function join(arr: any[]): void
+    }
+    ```
+
+    **声明文件**
+
+    比如在开发vue的过程中，默认是不识别我们的.vue文件的，那么我们就需要对其进行文件的声明；
+
+    比如在开发中我们使用了 jpg 这类图片文件，默认typescript也是不支持的，也需要对其进行声明；
+
+    ```
+    declare module '*.vue' {
+    	import { DefineComponent } from 'vue'
+    	const component: DefineComponent
+    	
+    	export default component
+    }
+    
+    declare module '*.jpg' {
+    	const src: string
+    	export default src
+    }
+    
+    declare module '*.jpg'
+    declare module '*.jpeg'
+    declare module '*.png'
+    declare module '*.svg'
+    declare module '*.gif'
+    ```
+
+    **声明命名空间**
+
+    我们在 index.html 中直接引入了 jQuery，进行命名空间的声明，在main.ts中就可以使用了
+
+    ```
+    // 声明命名空间
+    declare namespace $ {
+      export function ajax(settings: any) void
+    }
+    
+    // 使用
+    $.ajax({
+    	url: '',
+    	success: function() {}
+    })
+    ```
+
+
+
+##### 配置文件 tsconfig
+
+https://www.typescriptlang.org/tsconfig
 
