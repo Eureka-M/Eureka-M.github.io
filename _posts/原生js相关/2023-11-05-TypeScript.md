@@ -1708,6 +1708,107 @@ typescript会在哪里查找我们的类型声明呢？
 
 
 
+##### keyof
+
+`keyof` 操作符是在 `TypeScript2.1` 版本中增加的
+
+```
+interface IUser {
+  name: string;
+  age: number;
+  number: number;
+}
+type UserKeys = keyof IUser; // "name" | "age" | "number" 联合类型
+```
+
+`keyof` 用于返回对应类型所有 `Key` 的`联合类型`。
+
+###### 练习
+
+一个函数，接受两个参数，参数一是一个对象，参数二是这个对象中 `key`，如何用 `TypeScript` 编写函数。
+
+```
+function getValue<T, K extends keyof T>(obj: T, key: K) {
+	return obj[key]
+}
+```
+
+
+
+##### typeof
+
+常用来推导一个类型
+
+- interface类型
+
+    ```
+    interface IUser {
+      name: string
+      age: number
+      number: number
+    }
+    type UserType1 = typeof IUser;
+    let u: UserType1 = {
+      name: 'xiao2',
+      age: 18,
+      number: 001,
+    };
+    ```
+
+- class类型
+
+    ```
+    class TestClass{
+        constructor(public name:string,public age:number){}
+    }
+    type Instance = InstanceType<typeof TestClass>;
+    ```
+
+- ReturnType
+
+    ```
+    // ReturnType 中使用, 推导一个函数的返回值，直接传入函数是有问题的
+    function f() {
+      return { x: 10, y: 3 };
+    }
+    // 错误使用 ❌
+    type P = ReturnType<f>;
+    // 报错 'f' refers to a value, but is being used as a type here. Did you mean 'typeof f'?
+    
+    // 正确使用 
+    type P = ReturnType<typefo f>;
+    // type p = {x:number,y:number}
+    ```
+
+
+
+##### 映射
+
+```
+{[S in K]:T}
+```
+
+`in` 操作符用于遍历 `K` 类型中的所有类型。可以把它理解为 for...in
+
+```
+type InExample = 'a' | 'b' | 'c' | 'd';
+type Obj = {
+  [T in InExample]: string; // 遍历 InExample，定义每一个 key 的类型为 string
+};
+
+// 等价于
+/*type Obj = {
+    a:string,
+    b:string,
+    c:string,
+    d:string
+}*/
+```
+
+
+
+
+
 ##### 配置文件 tsconfig
 
 https://www.typescriptlang.org/tsconfig
