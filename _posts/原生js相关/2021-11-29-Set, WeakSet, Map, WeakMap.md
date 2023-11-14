@@ -20,11 +20,21 @@ typora-root-url: ..
 
 ## WeakSet
 
-**Weak： 弱引用**，如果是被弱引用了，我管你引不引用我就是要删除
-
 weakSet中只能存放对象类型，不能存放基本数据类型
 
 weakSet对元素的引用只是弱引用，如果没有其他引用对这个对象进行引用，那么GC可以对该对象进行回收。
+
+```
+let obj = { a: 1, b: 2 }
+let weakSet = new WeakSet()
+let set = new Set()
+weakSet.add(obj)
+set.add(obj)
+// 清空引用
+obj = null
+console.log(weakSet) // WeakSet {}
+console.log(set) // Set(1) {{…}}
+```
 
 因为WeakSet只是对对象的弱引用，如果遍历获取到其中的元素，那么有可能会造成对象不难正常的销毁，所以存储到weakset中的对象是`不可遍历`的。
 
